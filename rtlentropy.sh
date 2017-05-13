@@ -81,7 +81,7 @@ CC="arm-brcm-linux-uclibcgnueabi-gcc" \
 AR="arm-brcm-linux-uclibcgnueabi-ar" \
 RANLIB="arm-brcm-linux-uclibcgnueabi-ranlib" \
 CFLAGS="-ffunction-sections -fdata-sections -O3 -pipe -march=armv7-a -mtune=cortex-a9 -fno-caller-saves -mfloat-abi=soft -Wall -fPIC -std=gnu99 -I$(pwd)/libcap/include" \
-LDFLAGS="-ffunction-sections -fdata-sections -Wl,--gc-sections -static -shared" \
+LDFLAGS="-ffunction-sections -fdata-sections -Wl,--gc-sections" \
 BUILD_CC="gcc" \
 BUILD_CFLAGS="-I$(pwd)/libcap/include" \
 INDENT="| true" \
@@ -182,11 +182,7 @@ mkdir -p build
 cd build
 
 ARM_COMPILER_FLAGS="-ffunction-sections -fdata-sections -O3 -pipe -march=armv7-a -mtune=cortex-a9 -fno-caller-saves -mfloat-abi=soft -Wall -fPIC -std=gnu99"
-
 ARM_LINKER_FLAGS="-ffunction-sections -fdata-sections -Wl,--gc-sections -L$PACKAGE_ROOT/lib"
-
-ARM_LINKER_FINAL_COMMAND="arm-brcm-linux-uclibcgnueabi-gcc $ARM_COMPILER_FLAGS -O3 -DNDEBUG  $ARM_LINKER_FLAGS -L$PACKAGE_ROOT/lib CMakeFiles/rtl_entropy.dir/rtl_entropy.c.o  -o rtl_entropy  -lssl  -lcrypto -lusb-1.0 -lrtlsdr  -L$PACKAGE_ROOT/lib/libcap.a -rdynamic librtlentropylib.a $PACKAGE_ROOT/lib/libcap.a"
-
 cmake \
 -DCMAKE_SYSTEM_NAME="Linux" \
 -DCMAKE_SYSTEM_VERSION="2.6.36.4brcmarm" \
@@ -202,8 +198,6 @@ cmake \
 -DCMAKE_C_FLAGS="$ARM_COMPILER_FLAGS" \
 -DCMAKE_SHARED_LINKER_FLAGS="$ARM_LINKER_FLAGS" \
 -DCMAKE_EXE_LINKER_FLAGS="$ARM_LINKER_FLAGS" \
--DCMAKE_C_LINK_EXECUTABLE="$ARM_LINKER_FINAL_COMMAND" \
--DCMAKE_CXX_LINK_EXECUTABLE="$ARM_LINKER_FINAL_COMMAND" \
 -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER \
 -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY \
 -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY \
