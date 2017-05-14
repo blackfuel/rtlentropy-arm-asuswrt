@@ -131,7 +131,7 @@ BUILD_CFLAGS="-I$(pwd)/libcap/include" \
 INDENT="| true" \
 PAM_CAP="no" \
 RAISE_SETFCAP="no" \
-DYNAMIC="no" \
+DYNAMIC="yes" \
 lib="lib"
 
 touch __package_installed
