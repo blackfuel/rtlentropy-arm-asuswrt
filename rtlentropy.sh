@@ -92,6 +92,9 @@ else
 fi
 popd
 
+LIBS="-L$PACKAGE_ROOT/lib/libcap.a $PACKAGE_ROOT/lib/libcap.a -L$PACKAGE_ROOT/lib/librtlsdr.a $PACKAGE_ROOT/lib/librtlsdr.a -L$PACKAGE_ROOT/usr/lib/libusb-1.0.a $PACKAGE_ROOT/usr/lib/libusb-1.0.a  -L$PACKAGE_ROOT/usr/lib/libssl.a $PACKAGE_ROOT/usr/lib/libssl.a  -L$PACKAGE_ROOT/usr/lib/libcrypto.a $PACKAGE_ROOT/usr/lib/libcrypto.a $SYSROOT/usr/lib/libdl.a $SYSROOT/usr/lib/libdl.a -L$SYSROOT/usr/lib/libpthread.a $SYSROOT/usr/lib/libpthread.a -L$SYSROOT/usr/lib/libm.a $SYSROOT/usr/lib/libm.a -L$SYSROOT/usr/lib/librt.a $SYSROOT/usr/lib/librt.a -L$SYSROOT/usr/lib/libc.a $SYSROOT/usr/lib/libc.a -L$PACKAGE_ROOT/usr/lib -L$PACKAGE_ROOT/lib"
+
+
 ########## ##################################################################
 # LIBCAP # ##################################################################
 ########## ##################################################################
@@ -122,13 +125,13 @@ CC="arm-brcm-linux-uclibcgnueabi-gcc" \
 AR="arm-brcm-linux-uclibcgnueabi-ar" \
 RANLIB="arm-brcm-linux-uclibcgnueabi-ranlib" \
 CFLAGS="-ffunction-sections -fdata-sections -O3 -pipe -march=armv7-a -mtune=cortex-a9 -fno-caller-saves -mfloat-abi=soft -Wall -fPIC -std=gnu99 -I$(pwd)/libcap/include" \
-LDFLAGS="-ffunction-sections -fdata-sections -Wl,--gc-sections" \
+LDFLAGS="-ffunction-sections -fdata-sections -Wl,--gc-sections $LIBS" \
 BUILD_CC="gcc" \
 BUILD_CFLAGS="-I$(pwd)/libcap/include" \
 INDENT="| true" \
 PAM_CAP="no" \
 RAISE_SETFCAP="no" \
-DYNAMIC="yes" \
+DYNAMIC="no" \
 lib="lib"
 
 touch __package_installed
@@ -152,16 +155,17 @@ cd $FOLDER
 [ ! -f "configure" ] && autoreconf -i
 
 PKG_CONFIG_PATH="$PACKAGE_ROOT/lib/pkgconfig" \
-OPTS="-ffunction-sections -fdata-sections -O3 -pipe -march=armv7-a -mtune=cortex-a9 -fno-caller-saves -mfloat-abi=soft -Wall -fPIC -std=gnu99 -I$TOP/libusb10/libusb -I$PACKAGE_ROOT/include" \
+OPTS="-ffunction-sections -fdata-sections -O3 -pipe -march=armv7-a -mtune=cortex-a9 -fno-caller-saves -mfloat-abi=soft -Wall -fPIC -std=gnu99 -I$PACKAGE_ROOT/include" \
 CFLAGS="$OPTS" CPPFLAGS="$OPTS" CXXFLAGS="$OPTS" \
-LDFLAGS="-ffunction-sections -fdata-sections -Wl,--gc-sections -L$PACKAGE_ROOT/usr/lib" \
+LDFLAGS="-ffunction-sections -fdata-sections -Wl,--gc-sections $LIBS" \
 ./configure \
 --host=arm-brcm-linux-uclibcgnueabi \
 '--build=' \
 --prefix="$PACKAGE_ROOT" \
 --enable-static \
---enable-shared \
---disable-silent-rules
+--disable-shared \
+--disable-silent-rules \
+--enable-driver-detach
 
 $MAKE
 make install
@@ -188,7 +192,8 @@ mkdir -p build
 cd build
 
 ARM_COMPILER_FLAGS="-ffunction-sections -fdata-sections -O3 -pipe -march=armv7-a -mtune=cortex-a9 -fno-caller-saves -mfloat-abi=soft -Wall -fPIC -std=gnu99"
-ARM_LINKER_FLAGS="-ffunction-sections -fdata-sections -Wl,--gc-sections -L$PACKAGE_ROOT/lib"
+ARM_LINKER_FLAGS="-ffunction-sections -fdata-sections -Wl,--gc-sections $LIBS"
+ARM_LINK_EXECUTABLE="arm-brcm-linux-uclibcgnueabi-gcc  -ffunction-sections -fdata-sections -O3 -pipe -march=armv7-a -mtune=cortex-a9 -fno-caller-saves -mfloat-abi=soft -Wall -fPIC -std=gnu99 -O3 -DNDEBUG  -ffunction-sections -fdata-sections -Wl,--gc-sections CMakeFiles/rtlentropylib.dir/fips.c.o CMakeFiles/rtlentropylib.dir/log.c.o CMakeFiles/rtlentropylib.dir/util.c.o CMakeFiles/rtl_entropy.dir/rtl_entropy.c.o  -o rtl_entropy -rdynamic $LIBS"
 cmake \
 -DCMAKE_SYSTEM_NAME="Linux" \
 -DCMAKE_SYSTEM_VERSION="2.6.36.4brcmarm" \
@@ -204,6 +209,7 @@ cmake \
 -DCMAKE_C_FLAGS="$ARM_COMPILER_FLAGS" \
 -DCMAKE_SHARED_LINKER_FLAGS="$ARM_LINKER_FLAGS" \
 -DCMAKE_EXE_LINKER_FLAGS="$ARM_LINKER_FLAGS" \
+-DCMAKE_C_LINK_EXECUTABLE="$ARM_LINK_EXECUTABLE" \
 -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER \
 -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY \
 -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY \
