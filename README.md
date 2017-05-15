@@ -35,7 +35,7 @@ while [ true ]; do
 
     if [ -n "$(/bin/pidof rtl_entropy)" ] || [ -n "$(/bin/pidof rngd)" ]; then
       /usr/bin/killall -9 rtl_entropy rngd >/dev/null 2>&1
-      sleep 2
+      /bin/sleep 2
     fi
 
     [ -z "$(/bin/pidof rtl_entropy)" ] && /bin/rtl_entropy -b
