@@ -10,7 +10,7 @@ cd rtlentropy-arm-asuswrt
 
 ### HOWTO: Automatically start hardware RNG entropy collection when the router is rebooted
 
-__/jffs/scripts.init-start__
+__/jffs/scripts/init-start__
 ```
 #!/bin/sh
 
