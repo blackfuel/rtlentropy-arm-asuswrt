@@ -14,7 +14,7 @@ __/jffs/scripts/init-start__
 ```
 #!/bin/sh
 
-/jffs/scripts/rtl-start &
+/jffs/scripts/rtl-start.sh &
 ```
 
 __/jffs/scripts/rtl-start.sh__
