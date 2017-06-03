@@ -26,6 +26,8 @@ finish()  {
 }
 trap finish EXIT
 
+/bin/sleep 1
+
 # wait for device to become ready, then start rtl_entropy and rngd
 
 while [ true ]; do
@@ -46,7 +48,7 @@ while [ true ]; do
 
   else
     /usr/bin/logger -t $(/usr/bin/basename $0) "custom script waiting for hardware RNG to become ready [$$]"
-    /bin/sleep 1
+    /bin/sleep 5
   fi
 done
 ```
