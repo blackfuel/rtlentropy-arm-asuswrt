@@ -52,3 +52,24 @@ while [ true ]; do
   fi
 done
 ```
+
+### Example: How to test it
+`# cat /dev/random | rngtest -c 2048`  
+```
+rngtest 5
+Copyright (c) 2004 by Henrique de Moraes Holschuh
+This is free software; see the source for copying conditions.  There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+rngtest: starting FIPS tests...
+rngtest: bits received from input: 40960032
+rngtest: FIPS 140-2 successes: 2047
+rngtest: FIPS 140-2 failures: 1
+rngtest: FIPS 140-2(2001-10-10) Monobit: 0
+rngtest: FIPS 140-2(2001-10-10) Poker: 0
+rngtest: FIPS 140-2(2001-10-10) Runs: 0
+rngtest: FIPS 140-2(2001-10-10) Long run: 1
+rngtest: FIPS 140-2(2001-10-10) Continuous run: 0
+rngtest: input channel speed: (min=27.580; avg=803.385; max=3906250.000)Kibits/s
+rngtest: FIPS tests speed: (min=5.495; avg=62.288; max=70.905)Mibits/s
+rngtest: Program run time: 50425310 microseconds
+```
