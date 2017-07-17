@@ -30,7 +30,15 @@ trap finish EXIT
 
 # wait for device to become ready, then start rtl_entropy and rngd
 
-while [ true ]; do
+loop_wait=0
+while : ; do
+  if [ $loop_wait -eq 0 ]; then
+    loop_wait=5
+  else
+    /usr/bin/logger -t $(/usr/bin/basename $0) "custom script waiting for hardware RNG to become ready [$$]"
+    /bin/sleep $loop_wait
+  fi
+
   # Realtek Semiconductor Corp. RTL2838 DVB-T
   /usr/bin/lsusb | /bin/grep -qi "0bda:2838"
   if [ $? -eq 0 ]; then
@@ -40,15 +48,12 @@ while [ true ]; do
       /bin/sleep 2
     fi
 
-    [ -z "$(/bin/pidof rtl_entropy)" ] && /bin/rtl_entropy -b
+    [ -z "$(/bin/pidof rtl_entropy)" ] && /bin/rtl_entropy -b && /bin/sleep 5
+    [ -z "$(/bin/pidof rtl_entropy)" ] && continue
     [ -z "$(/bin/pidof rngd)" ] && /sbin/rngd -r /var/run/rtl_entropy.fifo -W2000
 
     /usr/bin/logger -t $(/usr/bin/basename $0) "custom script started hardware RNG entropy collection [$$]"
     break
-
-  else
-    /usr/bin/logger -t $(/usr/bin/basename $0) "custom script waiting for hardware RNG to become ready [$$]"
-    /bin/sleep 5
   fi
 done
 ```
