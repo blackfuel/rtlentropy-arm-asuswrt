@@ -50,7 +50,8 @@ while : ; do
 
     [ -z "$(/bin/pidof rtl_entropy)" ] && /bin/rtl_entropy -b && /bin/sleep 5
     [ -z "$(/bin/pidof rtl_entropy)" ] && continue
-    [ -z "$(/bin/pidof rngd)" ] && /sbin/rngd -r /var/run/rtl_entropy.fifo -W2000
+    [ -z "$(/bin/pidof rngd)" ] && /sbin/rngd -r /var/run/rtl_entropy.fifo -W2000 && /bin/sleep 5
+    [ -z "$(/bin/pidof rngd)" ] && continue
 
     /usr/bin/logger -t $(/usr/bin/basename $0) "custom script started hardware RNG entropy collection [$$]"
     break
